@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOC Weekly Dashboard – 2026-04-12 to 2026-04-18</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #f0e040;
+    --green: #3fb950; --orange: #f0883e; --red: #f85149; --blue: #58a6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; padding: 24px; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+  .logo { font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; }
+  .period { font-size: 0.85rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .kpi-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .kpi-value { font-size: 2.2rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+  .kpi-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+  .kpi-accent { color: var(--accent); }
+  .kpi-green { color: var(--green); }
+  .kpi-orange { color: var(--orange); }
+  .kpi-red { color: var(--red); }
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .chart-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; font-family: 'IBM Plex Mono', monospace; }
+  .full-width { grid-column: 1 / -1; }
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .table-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; font-family: 'IBM Plex Mono', monospace; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 400; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 12px; border-bottom: 1px solid #21262d; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1c2128; }
+  .badge { padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
+  .badge-resolved { background: #0d3321; color: var(--green); }
+  .badge-ongoing { background: #3d2000; color: var(--orange); }
+  .badge-escalated { background: #3d0000; color: var(--red); }
+  .badge-assigned { background: #0d2040; color: var(--blue); }
+  .section-label { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="logo">◈ NOC OPERATIONS DASHBOARD</div>
+  <div class="period">Week: 2026-04-12 → 2026-04-18 &nbsp;|&nbsp; Generated: 18/04/2026 17:35</div>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">System Incidents</div>
+    <div class="kpi-value kpi-accent">6</div>
+    <div class="kpi-sub">3 resolved · 1 ongoing · 1 escalated</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Fibre Incidents</div>
+    <div class="kpi-value kpi-orange">7</div>
+    <div class="kpi-sub">3 resolved · 1 ongoing · 3 assigned</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Resolution Rate (Systems)</div>
+    <div class="kpi-value kpi-green">50%</div>
+    <div class="kpi-sub">3 of 6 resolved</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Resolution Rate (Fibre)</div>
+    <div class="kpi-value kpi-green">43%</div>
+    <div class="kpi-sub">3 of 7 resolved</div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+  <div class="chart-card full-width">
+    <div class="chart-title">Daily Incident Volume</div>
+    <div id="dailyChart"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">System Incidents by System</div>
+    <div id="sysChart"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Fibre Incidents by Region</div>
+    <div id="regionChart"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">System Incident Status</div>
+    <div id="sysStatusChart"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Fibre Incident Status</div>
+    <div id="fibreStatusChart"></div>
+  </div>
+</div>
+
+<!-- Tables -->
+<div class="section-label">Recent System Incidents</div>
+<div class="table-card">
+  <table>
+    <thead><tr><th>System</th><th>Description</th><th>Date/Time</th><th>Duration</th><th>Status</th><th>Agent</th></tr></thead>
+    <tbody>
+        <tr>
+            <td>AMI</td>
+            <td>System issue #1</td>
+            <td>2026-04-18@0800hrs</td>
+            <td>30min</td>
+            <td><span class="badge badge-resolved">Resolved</span></td>
+            <td>Test Agent</td>
+        </tr>
+        <tr>
+            <td>PREPAID</td>
+            <td>System issue #2</td>
+            <td>2026-04-17@0800hrs</td>
+            <td>30min</td>
+            <td><span class="badge badge-ongoing">Ongoing</span></td>
+            <td>Test Agent</td>
+        </tr>
+        <tr>
+            <td>USSD</td>
+            <td>System issue #3</td>
+            <td>2026-04-16@0800hrs</td>
+            <td>30min</td>
+            <td><span class="badge badge-assigned">Assigned</span></td>
+            <td>Test Agent</td>
+        </tr>
+        <tr>
+            <td>SAP</td>
+            <td>System issue #4</td>
+            <td>2026-04-15@0800hrs</td>
+            <td>30min</td>
+            <td><span class="badge badge-resolved">Resolved</span></td>
+            <td>Test Agent</td>
+        </tr>
+        <tr>
+            <td>CONTACT CENTRE</td>
+            <td>System issue #5</td>
+            <td>2026-04-14@0800hrs</td>
+            <td>30min</td>
+            <td><span class="badge badge-escalated">Escalated</span></td>
+            <td>Test Agent</td>
+        </tr>
+        <tr>
+            <td>INCMS</td>
+            <td>INCMS unavailability</td>
+            <td>14/04/2026@1633hrs</td>
+            <td>19minutes</td>
+            <td><span class="badge badge-resolved">Resolved</span></td>
+            <td>Chemnjor Kevin</td>
+        </tr></tbody>
+  </table>
+</div>
+
+<div class="section-label">Recent Fibre Incidents</div>
+<div class="table-card">
+  <table>
+    <thead><tr><th>Region</th><th>Description</th><th>Ref No</th><th>Date Reported</th><th>Duration</th><th>Status</th></tr></thead>
+    <tbody>
+        <tr>
+            <td>NAIROBI REGION</td>
+            <td>Link down incident 1</td>
+            <td>480000</td>
+            <td>2026-04-18@0900hrs</td>
+            <td>2hrs</td>
+            <td><span class="badge badge-resolved">Resolved</span></td>
+        </tr>
+        <tr>
+            <td>WESTERN REGION</td>
+            <td>Link down incident 2</td>
+            <td>480001</td>
+            <td>2026-04-17@0900hrs</td>
+            <td>2hrs</td>
+            <td><span class="badge badge-assigned">Assigned</span></td>
+        </tr>
+        <tr>
+            <td>CENTRAL REGION</td>
+            <td>Link down incident 3</td>
+            <td>480002</td>
+            <td>2026-04-16@0900hrs</td>
+            <td>2hrs</td>
+            <td><span class="badge badge-ongoing">Ongoing</span></td>
+        </tr>
+        <tr>
+            <td>NAIROBI REGION</td>
+            <td>Link down incident 4</td>
+            <td>480003</td>
+            <td>2026-04-15@0900hrs</td>
+            <td>2hrs</td>
+            <td><span class="badge badge-resolved">Resolved</span></td>
+        </tr>
+        <tr>
+            <td>WESTERN REGION</td>
+            <td>Link down incident 5</td>
+            <td>480004</td>
+            <td>2026-04-14@0900hrs</td>
+            <td>2hrs</td>
+            <td><span class="badge badge-assigned">Assigned</span></td>
+        </tr>
+        <tr>
+            <td>NAIROBI REGION</td>
+            <td>Airtel: Kiboko<>Mtito fibre cut at POF 72.492km from KIBOKO</td>
+            <td>483557</td>
+            <td>14/04/2026@0821hrs</td>
+            <td>29 min</td>
+            <td><span class="badge badge-resolved">Resolved</span></td>
+        </tr>
+        <tr>
+            <td>NAIROBI REGION</td>
+            <td>Mymanga : Kikuyu to Icolo through Karen link down</td>
+            <td>483518</td>
+            <td>13/04/2026@1453hrs</td>
+            <td>16 hrs</td>
+            <td><span class="badge badge-assigned">Assigned</span></td>
+        </tr></tbody>
+  </table>
+</div>
+
+<script>
+const plotConfig = {responsive: true, displayModeBar: false};
+const plotLayout = {
+  paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+  font: {color: '#8b949e', family: 'IBM Plex Sans', size: 11},
+  margin: {l:40,r:10,t:10,b:40},
+  xaxis: {gridcolor: '#21262d', linecolor: '#30363d'},
+  yaxis: {gridcolor: '#21262d', linecolor: '#30363d'},
+};
+
+// Daily chart
+Plotly.newPlot('dailyChart', [
+  {type:'bar', name:'System Incidents', x:["12 Apr", "13 Apr", "14 Apr", "15 Apr", "16 Apr", "17 Apr", "18 Apr"], y:[0, 0, 2, 1, 1, 1, 1],
+    marker:{color:'#f0e040', opacity:0.85}},
+  {type:'bar', name:'Fibre Incidents', x:["12 Apr", "13 Apr", "14 Apr", "15 Apr", "16 Apr", "17 Apr", "18 Apr"], y:[0, 0, 3, 1, 1, 1, 1],
+    marker:{color:'#f0883e', opacity:0.85}}
+], {...plotLayout, barmode:'group', height:200, showlegend:true,
+    legend:{orientation:'h',x:0,y:1.2,font:{size:10}}}, plotConfig);
+
+// System bar chart
+Plotly.newPlot('sysChart', [
+  {type:'bar', orientation:'h', x:[1, 1, 1, 1, 1, 1], y:["INCMS", "AMI", "PREPAID", "USSD", "SAP", "CONTACT CENTRE"],
+    marker:{color:'#58a6ff'}}
+], {...plotLayout, height:250, xaxis:{...plotLayout.xaxis, title:'Count'}}, plotConfig);
+
+// Region bar chart
+Plotly.newPlot('regionChart', [
+  {type:'bar', orientation:'h', x:[4, 2, 1], y:["NAIROBI REGION", "WESTERN REGION", "CENTRAL REGION"],
+    marker:{color:'#3fb950'}}
+], {...plotLayout, height:250}, plotConfig);
+
+// Status pies
+Plotly.newPlot('sysStatusChart', [
+  {type:'pie', values:[3,1,1,1],
+    labels:['Resolved','Ongoing','Escalated','Assigned'],
+    marker:{colors:['#3fb950','#f0883e','#f85149','#58a6ff']},
+    textinfo:'label+percent', hole:0.4}
+], {...plotLayout, height:220, margin:{l:10,r:10,t:10,b:10}}, plotConfig);
+
+Plotly.newPlot('fibreStatusChart', [
+  {type:'pie', values:[3,1,3],
+    labels:['Resolved','Ongoing','Assigned'],
+    marker:{colors:['#3fb950','#f0883e','#58a6ff']},
+    textinfo:'label+percent', hole:0.4}
+], {...plotLayout, height:220, margin:{l:10,r:10,t:10,b:10}}, plotConfig);
+</script>
+</body>
+</html>

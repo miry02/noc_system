@@ -1,0 +1,10 @@
+{
+  "smtp_host": "smtp-mail.outlook.com",
+  "smtp_port": 587,
+  "sender_email": "KavulunzeM@kplc.co.ke",
+  "sender_password": "Ic3cre@mman7",
+  "recipients": [
+    "KavulunzeM@kplc.co.ke"
+  ],
+  "cc": []
+}
